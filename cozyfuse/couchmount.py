@@ -306,7 +306,6 @@ class CouchFSDocument(fuse.Fuse):
             file_doc = dbutils.get_file(self.db, path)
             binary_id = file_doc["binary"]["file"]["id"]
             binary_attachment = self.db.get_attachment(binary_id, "file")
-            logger.info(binary_id)
 
             if binary_attachment is None:
                 logger.info('No attachment for this binary')
@@ -357,8 +356,6 @@ class CouchFSDocument(fuse.Fuse):
         """
         try:
             path = _normalize_path(path)
-            if len(path) > 0 and path[0] != '/':
-                path = '/' + path
             logger.info('release file %s' % path)
             file_doc = dbutils.get_file(self.db, path)
             binary_id = file_doc["binary"]["file"]["id"]
@@ -624,10 +621,8 @@ def _normalize_path(path):
     path = u'/'.join([part for part in path.split(u'/') if part != u''])
     if len(path) == 0:
         return ''
-    elif path[0] == '/':
-        return path[1:]
     else:
-        return path
+        return '/' + path
 
 
 def _path_split(path):
